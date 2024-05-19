@@ -10,6 +10,7 @@ use App\Http\Controllers\companyDetails;
 use App\Http\Controllers\ratings;
 use App\Http\Controllers\Search;
 use App\Http\Controllers\companySearch;
+use App\Http\Controllers\jokes;
 
 
 use App\Http\Controllers\UserCRUD;
@@ -74,7 +75,7 @@ Route::group(['middleware'=>['AuthCheck']], function(){
     Route::delete('/admin/student/delete/{id}', [UserCRUD::class, 'destroy'])->name('student.destroy');
     Route::get('admin/student/search', [Search::class, 'student'])->name('student.search');
 
-    //admin pilots CRRUD
+    //admin pilots CRUD
     Route::get('/admin/pilote', [piloteCRUD::class, 'index'])->name('pilote.index');
     Route::get('/admin/pilote/create', [piloteCRUD::class, 'create'])->name('pilote.create');
     Route::post('/admin/pilote/create/done', [piloteCRUD::class, 'store'])->name('pilote.store');
@@ -84,8 +85,32 @@ Route::group(['middleware'=>['AuthCheck']], function(){
     Route::delete('/admin/pilote/delete/{id}', [piloteCRUD::class, 'destroy'])->name('pilote.destroy');    
     Route::get('admin/pilote/search', [Search::class, 'pilotes'])->name('piloteSearch');
 
-    Route::resource('/admin/internship', internshipCRUD::class);
-    Route::resource('/admin/company', companyCRUD::class);
+    
+    //admin offer CRRUD
+    Route::get('/admin/internship', [internshipCRUD::class, 'index'])->name('offer.index');
+    Route::get('/admin/internship/create', [internshipCRUD::class, 'create'])->name('offer.create');
+    Route::post('/admin/internship/create/done', [internshipCRUD::class, 'store'])->name('offer.store');
+    Route::get('/admin/internship/offer/{id}', [internshipCRUD::class, 'show'])->name('offer.show');
+    Route::get('/admin/internship/{id}/edit', [internshipCRUD::class, 'edit'])->name('offer.edit');
+    Route::PATCH('/admin/internship/{id}/edit/done', [internshipCRUD::class, 'update'])->name('offer.update');
+    Route::delete('/admin/internship/delete/{id}', [internshipCRUD::class, 'destroy'])->name('offer.destroy');   
+    Route::get('admin/internships/search', [Search::class, 'offerCRUD'])->name('offerSearch');
+
+    
+    //admin company CRRUD
+    Route::get('/admin/company', [companyCRUD::class, 'index'])->name('company.index');
+    Route::get('/admin/company/create', [companyCRUD::class, 'create'])->name('company.create');
+    Route::post('/admin/company/create/done', [companyCRUD::class, 'store'])->name('company.store');
+    Route::get('/admin/company/offer/{id}', [companyCRUD::class, 'show'])->name('company.show');
+    Route::get('/admin/company/{id}/edit', [companyCRUD::class, 'edit'])->name('company.edit');
+    Route::PATCH('/admin/company/{id}/edit/done', [companyCRUD::class, 'update'])->name('company.update');
+    Route::delete('/admin/company/delete/{id}', [companyCRUD::class, 'destroy'])->name('company.destroy');   
+    Route::get('admin/companies/search', [Search::class, 'companyCRUD'])->name('adminCompanySearch');
+
+
+    //API integration
+    Route::get('/jokes', [jokes::class, 'show'])->name('jokes');
+
 });
 
 

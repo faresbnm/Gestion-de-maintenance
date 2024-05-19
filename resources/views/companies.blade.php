@@ -268,7 +268,8 @@
           <button type="submit" class="micButton">
             Search
           </button>
-      </div>
+      </div>   <br>
+      <input placeholder="Search by Locality" style="padding: 7px; font-size:15px; width:200px;" type="text" name="companyByLocality">
     </form>
 
     </center>

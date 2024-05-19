@@ -16,7 +16,75 @@
       background-color: #91398B;
       font-family: poppins;
   }
-  
+  .filter-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        color: white;
+        background-color: purple;
+    }
+
+    .filter-container select, .filter-container input[type="date"] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+    .filter-container input[type="number"],  .filter-container input[type="text"] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    .search-button {
+        padding: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    /* Styles for pop-up modal */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+        background-color: transparent;
+        margin: auto;
+        padding: 20px;
+        border-radius: 5px;
+    }
+
+    .close {
+        color: #ffffff;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
   div.searchbar{
       margin-top: 100px;
       display: flex;
@@ -282,9 +350,9 @@
     
     </script>
       <center>      
-      <form action="{{route('offer.search')}}" method="GET">
+      <form action="{{route('offer.search') . '?' . http_build_query(request()->except('page')) }}" method="GET">
         <div class="InputContainer">
-            <input type="text" name="OfferQuery" class="input" id="input" placeholder="Search Internships">
+            <input value="" type="text" name="OfferQuery" class="input" id="input" placeholder="Search Internships">
           
             <label for="input" class="labelforsearch">
             <svg viewBox="0 0 512 512" class="searchIcon"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"></path></svg>
@@ -294,23 +362,67 @@
             <button type="submit" class="micButton">
               Search
             </button>
-        </div><br>
-
-        <div class="search-by-promo">
-        <select style="width: 200px; font-size:15px; padding:7px; cursor:pointer; background-color:#ffffff; border-radius:10px; color:rgb(0, 0, 0);" name="studentByPromo">
-          <option value="" selected>Search by promotion</option>
-          
-          <option value=""></option>
-          
-        </select>
-      </div><br>
-      <div class="search-by-salary">
-        <input type="number" style="width:100px;" placeholder="Salary"><span style="color: white; margin-left:10px;">(Add $ signe)</span>
-      </div>
+        </div>
       </form>
+      <button class="search-button" onclick="openModal()">Filter</button>
 
+      <div id="myModal" class="modal">
+        <div class="modal-content">
+          <span class="close" onclick="closeModal()">&times;</span>
+          <div class="filter-container">
+              <form id="filter-form" action="{{route('offer.search') . '?' . http_build_query(['offerByPromo' => request()->input('offerByPromo'), 'offerByDuration' => request()->input('offerByDuration'), 'offerByPlace' => request()->input('offerByPlace')])}}" method="GET">
+          
+                  <input value="" name="offerByLocality" type="text" placeholder="Search by loclaity">
+          
+          
+                  <select name="offerByPromo" id="promotion">
+                    <option value="" selected>Search by promotion</option>
+                    @foreach ($promo as $item)
+                    <option value="{{$item}}">{{$item}}</option>
+                    @endforeach
+                  </select>
+          
+                  <input value="" name="offerByDuration" type="number" id="duration" placeholder="Search by Duration (Months)">
+          
+                  <input value="" name="offerByDate" type="date" id="date">
+          
+                  <input value="" name="offerBySA" type="number" id="num_students" placeholder="students applies">
+
+                  <input value="" name="offerByPlace" type="number" id="num_students" placeholder="Avalaible places">
+      
+                  <input style="padding: 10px; border:1px solid white; color: white; background-color: purple; cursor: pointer;" type="submit" value="Apply Filter">
+              </form>
+          </div>
+        </div>
+      </div>
       </center>
-  
+      <script>
+        // Get the modal
+        var modal = document.getElementById("myModal");
+    
+        // Get the button that opens the modal
+        var btn = document.getElementsByClassName("search-button")[0];
+    
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+    
+        // When the user clicks the button, open the modal 
+        function openModal() {
+            modal.style.display = "block";
+        }
+    
+        // When the user clicks on <span> (x), close the modal
+        function closeModal() {
+            modal.style.display = "none";
+        }
+    
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
       <!--offres-->
       <div class="cardsContainer">
         @if ($internship->isEmpty())

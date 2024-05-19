@@ -32,6 +32,7 @@ class Applications extends Controller
         $existingApplication = Application::where('student_id', $studentId)
                                      ->where('offer_id', $id)
                                      ->exists();
+                                     
     
         if ($existingApplication) {
             // If the student has already applied, provide feedback (e.g., flash message) and redirect back

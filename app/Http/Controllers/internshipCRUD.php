@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Models\internships;
 use App\Models\companies;
+use App\Models\userData;
 
 use Illuminate\Support\Facades\File;
 
@@ -18,8 +19,10 @@ class internshipCRUD extends Controller
      */
     public function index()
     {
-        $offer = internships::paginate(5);
-        return view ('admin.internships', compact('offer'));
+        $offer = internships::all();
+        $promo = ['A1', 'A2', 'A3','A4', 'A5'];
+
+        return view ('admin.internships', compact('offer', 'promo'));
     }
 
     /**
@@ -69,9 +72,12 @@ class internshipCRUD extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id, Request $request)
     {
-        //
+        $offer = internships::with('company.Localization')->findOrFail($id);
+        $userId = $request->session()->get('activeSession');
+        $userDisplayData = userData::find($userId);
+        return view('offerDetails', compact('offer','userDisplayData' ));
     }
 
     /**
@@ -123,7 +129,7 @@ class internshipCRUD extends Controller
         // Set other properties as needed
         $offer->save();
     
-        return redirect('admin/internship')->with('flash_message', 'Offer Updated');
+        return redirect('admin.internship')->with('flash_message', 'Offer Updated');
     }
 
     /**
